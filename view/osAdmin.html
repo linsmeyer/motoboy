@@ -1,0 +1,830 @@
+<style>
+   .padded tr td { 
+   padding:5px;
+   }
+   .padded{
+   font-size:12px;
+   }
+   .padded input{
+   font-size:12px;
+   }
+   .padded textarea{
+   font-size:12px;
+   }
+   .padded{
+   text-align: center;
+   }
+</style>
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+   <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+         </div>
+         <div class="modal-body">
+            <br>
+            <div class="container-fluid">
+               <!-- BEGIN SAMPLE TABLE PORTLET-->
+               <div class="portlet light">
+                  <div class="portlet-title">
+                     <div class="caption">
+                        <i class="fa fa-bookmark font-green-sharp"></i>
+                        <span class="caption-subject font-green-sharp bold uppercase">Alteração da Solicitação</span>
+                     </div>
+                  </div>
+                  <div class="portlet-body flip-scroll">
+                     <div class="row" ng-if="user.regra.id != 1">
+                        <div class="col-md-6">
+                           <div class="portlet box yellow-crusta">
+                              <div class="portlet-title">
+                                 <div class="caption">
+                                    <i class="fa fa-motorcycle"></i> &nbsp;Dados da Ordem de Serviço
+                                 </div>
+                              </div>
+                              <div class="portlet-body">
+                                 <div class="row">
+                                    <div class="col-lg-12">
+                                       <table class="padded">
+                                          <tr>
+                                             <td>Número da OS
+                                             </td>
+                                             <td>{{osModal.id}}
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>Data e Hora da OS
+                                             </td>
+                                             <td>{{osModal.created_at | data}}
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>Status
+                                             </td>
+                                             <td>
+                                                <span ng-if="osModal.status.id == 1" style="padding:5px;" class="bg-purple-seance">
+                                                {{osModal.status.descricao}} 
+                                                </span>
+                                                <span ng-if="osModal.status.id == 4" style="padding:5px;" class="bg-red-thunderbird">
+                                                {{osModal.status.descricao}} 
+                                                </span>
+                                                <span ng-if="osModal.status.id == 2" style="padding:5px;" class="bg-blue-steel">
+                                                {{osModal.status.descricao}}
+                                                </span>
+                                                <span ng-if="osModal.status.id == 3" style="padding:5px;" class="bg-green-jungle">
+                                                {{osModal.status.descricao}} 
+                                                </span>
+                                                &nbsp;&nbsp;
+                                                <select ng-model="osModal.status.id" ng-options="st.id as st.descricao for st in statuss">
+                                                   <option value="osModal.status.id">Selecione um Status</option>
+                                                </select>
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>Valor
+                                             </td>
+                                             <td><input class="form-control" ui-number-mask ui-hide-group-sep type="text" ng-model="osModal.valor"  style="width:50%"maxlength="8">
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>Comissão
+                                             </td>
+                                             <td>
+                                                <div class="row">
+                                                   <div class="col-lg-4">
+                                                      <input class="form-control" ui-percentage-mask ui-hide-group-sep type="text" ng-keyup="attValorComissao(osModal)" ng-model="osModal.comissaoP" maxlength="8">
+                                                   </div>
+                                                   <div class="col-lg-8">
+                                                      <label style="padding-top:7.5px;">R$ {{ osModal.valorComissao.toFixed(2)}} &nbsp; &nbsp; &nbsp; R$ {{ (osModal.valor - osModal.valorComissao).toFixed(2)}} </label>
+                                                   </div>
+                                                </div>
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>Comissão Paga?
+                                             </td>
+                                             <td>
+                                                <input ng-model="osModal.motoboy_pago" type="radio" value="1">&nbsp;Sim &nbsp;&nbsp;
+                                                <input ng-model="osModal.motoboy_pago" type="radio" value="0">&nbsp;Não
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>Tipo de Pagamento
+                                             </td>
+                                             <td><input ng-model="osModal.tipoPg" type="radio" value="VISTA">&nbsp;Á VISTA &nbsp;&nbsp;
+                                                <input ng-model="osModal.tipoPg" type="radio" value="PRAZO">&nbsp;Á PRAZO
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>Pago
+                                             </td>
+                                             <td><input ng-model="osModal.pago" type="radio" value="1">&nbsp;Sim &nbsp;&nbsp;
+                                                <input ng-model="osModal.pago" type="radio" value="0">&nbsp;Não
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>Retorno
+                                             </td>
+                                             <td><input ng-model="osModal.endereco.retorno" type="radio" value="0">&nbsp;Não&nbsp;&nbsp;
+                                                <input ng-model="osModal.endereco.retorno" type="radio" value="1">&nbsp;Sim
+                                             </td>
+                                          </tr>
+                                          <tr ng-if="osModal.user_type == 'App\UserAvulso'">
+                                             <td>Operador
+                                             </td>
+                                             <td>{{osModal.operador.dados_operador.nome}}
+                                             </td>
+                                          </tr>
+                                          <tr>
+                                             <td>Motoboy</td>
+                                             <td>
+                                                <br>
+                                                <select class="form-control" ng-model="osModal.motoboy.id" ng-options="motoboy.id as motoboy.nome + ' ' +motoboy.celular for motoboy in motoboys | orderBy:nome">
+                                                   <option value="">Todos</option>
+                                                </select>
+                                             </td>
+                                          </tr>
+                                       </table>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="portlet box green">
+                              <div class="portlet-title">
+                                 <div class="caption">
+                                    <i class="fa fa-motorcycle"></i> &nbsp;Dados do Cliente
+                                 </div>
+                              </div>
+                              <div class="portlet-body">
+                                 <div class="row">
+                                    <div class="col-lg-12">
+                                       <table class="padded">
+                                          <tr>
+                                             <td>Nome
+                                             </td>
+                                             <td>{{osModal.user.nome}}
+                                             </td>
+                                          </tr>
+                                          <tr >
+                                             <td>Tipo
+                                             </td>
+                                             <td>
+                                                {{osModal.user_type.substring(4) == 'UserAvulso' ? '-' : osModal.user_type.substring(4) == 'PessoaFisica' ? 'Cliente Físico' : 'Cliente Jurídico' }}
+                                             </td>
+                                          </tr>
+                                          <tr ng-if="osModal.user.telefone">
+                                             <td>Telefone
+                                             </td>
+                                             <td>{{osModal.user.telefone}}
+                                             </td>
+                                          </tr>
+                                          <tr ng-if="osModal.user.celular">
+                                             <td>Celular
+                                             </td>
+                                             <td>{{osModal.user.celular}}
+                                             </td>
+                                          </tr>
+                                          <tr ng-if="osModal.user.email">
+                                             <td>Endereços
+                                             </td>
+                                             <td>{{osModal.user.endereco}} Nº {{osModal.user.numero}} | {{osModal.user.cidade}} - {{osModal.user.estado}}
+                                             </td>
+                                          </tr>
+                                          <tr ng-if="osModal.user.indicacao">
+                                             <td>Indicação
+                                             </td>
+                                             <td>{{osModal.indicacao.nome}}
+                                             </td>
+                                          </tr>
+                                       </table>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="row" ng-if="user.regra.id != 1">
+                        <div class="col-md-12">
+                           <div class="portlet box purple">
+                              <div class="portlet-title">
+                                 <div class="caption">
+                                    <i class="fa fa-motorcycle"></i> &nbsp;Dados da Ordem de Serviço
+                                 </div>
+                              </div>
+                              <div class="portlet-body">
+                                 <div class="row">
+                                    <div class="col-lg-12">
+                                       <dt>Endereço de Retirada</dt>
+                                       <dd>{{osModal.endereco.endereco_retirada.replace(', Brasil', '')}} - Nº {{osModal.endereco.numero_retirada}}</dd>
+                                       <br>
+                                       <dt>Endereços de Entrega</dt>
+                                       <dd ng-repeat="osEe in osModal.endereco.enderecos_entrega">{{osEe.endereco_entrega.replace(', Brasil', '')}} - Nº {{osEe.numero_entrega}}<br><br></dd>
+                                       <br>
+                                       <dt>Observação do Cliente</dt>
+                                       <dd><br><textarea class="form-control" ng-model="osModal.endereco.observacao" maxlength="1000"></textarea></dd>
+                                       <br>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="row" ng-if="user.regra.id > 1">
+                        <div class="col-md-12">
+                           <div class="well">
+                              <dt>Observação Interna</dt>
+                              <br>
+                              <dd>
+                                 <textarea class="form-control" ng-model="osModal.obs_interna.obs_interna" maxlength="1000"></textarea>
+                              </dd>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="row" ng-if="user.regra.id > 1">
+                        <div class="col-md-12">
+                           <button ng-click="salvarOs(osModal)" class="btn btn-info"><span class="glyphicon glyphicon-ok"></span>&nbsp;Salvar
+                           </button>
+                           <button ng-click="salvarOsEmail(osModal)" class="btn btn-warning"><span class="fa fa-envelope"></span>&nbsp;Salvar (Email)
+                           </button>
+                           <!--                            
+                           <button ng-click="salvarOsAndroid(osModal, osModal.id)" class="btn btn-success"><span class="glyphicon glyphicon-map-marker"></span>&nbsp;Salvar (Android)
+                            -->
+                           </button>                           
+                        </div>
+                     </div>
+                  </div>
+                  <!-- END SAMPLE TABLE PORTLET-->
+                  <!-- BEGIN SAMPLE TABLE PORTLET-->
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<style>
+   .glyphicon.glyphicon-spin {
+   font-size: 75px;
+   }
+   .glyphicon.glyphicon-refresh {
+   font-size: 75px;
+   }
+   .cancelado {
+   background-color:#ebccd1;
+   }
+   .andamento {
+   background-color:#d9edf7;
+   }
+   .terminada {
+   background-color:#dff0d8;
+   }
+   .table > tbody > tr > td {
+   vertical-align: middle;
+   text-align: center;
+   }
+   .table > thead > tr > th {
+   text-align: center;
+   }
+</style>
+<div ng-show="loading" class="page-container">
+   <br><br><br><br>
+   <H1 align="center"><span class="glyphicon glyphicon-refresh glyphicon-spin"></span></H1>
+   <br><br><br><br>
+</div>
+<!-- END HEADER -->
+<!-- BEGIN PAGE CONTAINER -->
+<div ng-show="!loading" class="page-container">
+   <!-- BEGIN PAGE HEAD -->
+   <div class="page-head">
+      <div class="container">
+         <!-- BEGIN PAGE TITLE -->
+         <div class="page-title">
+            <h1>Controle de OS <small>Tela de Solicitação de Motoboy</small></h1>
+         </div>
+         <!-- END PAGE TITLE -->
+         <!-- BEGIN PAGE TOOLBAR -->
+         <!-- END PAGE TOOLBAR -->
+      </div>
+   </div>
+   <!-- END PAGE HEAD -->
+   <!-- BEGIN PAGE CONTENT -->
+   <div class="page-content">
+      <div class="container">
+         <!-- /.modal -->
+         <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+         <!-- BEGIN PAGE BREADCRUMB -->
+         <ul class="page-breadcrumb breadcrumb">
+            <li>
+               <a href="#os">OS</a><i class="fa fa-circle"></i>
+            </li>
+            <li class="active">
+               Solicitações
+            </li>
+         </ul>
+         <!-- END PAGE BREADCRUMB -->
+         <!-- BEGIN PAGE CONTENT INNER -->
+         <div class="row">
+            <div class="col-md-12">
+               <!--
+                  <div class="note note-success note-bordered">
+                     <p>
+                         Please try to re-size your browser window in order to see the tables in responsive mode.
+                     </p>
+                  </div>
+                  -->
+               <!-- BEGIN SAMPLE TABLE PORTLET-->
+               <div class="portlet light">
+                  <div class="portlet-title">
+                     <div class="caption">
+                        <i class="fa fa-bookmark font-green-sharp"></i>
+                        <span class="caption-subject font-green-sharp bold uppercase">Cadastrar Nova Solicitação</span>
+                     </div>
+                  </div>
+                  <div class="portlet-body flip-scroll">
+                     <div class="row" ng-if="msgShow" align="left">
+                        <div class="col-md-12">
+                           <div class="alert alert-success">
+                              <strong>Ordem de Serviço criada</strong>.<br><br>
+                              <ul>
+                                 <li>{{message}}</li>
+                              </ul>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="row" ng-if="validate.show" align="left">
+                        <div class="col-md-12">
+                           <div class="alert alert-danger">
+                              <strong>Opss!</strong> Ocorreram alguns erros de preenchimento<br><br>
+                              <ul>
+                                 <li ng-repeat="p in validate.msg track by $index">{{p[0]}}</li>
+                              </ul>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="row" ng-if="user.regra.id != 1">
+                        <div class="col-lg-6">
+                           <div class="row">
+                              <div class="col-lg-8">
+                                 <div angucomplete-alt id="ex6" placeholder="Procurar Cliente" pause="100" selected-object="clienteFound" local-data="clientes" search-fields="nome,telefone" title-field="nome" description-field="telefone" minlength="3" input-class="form-control form-control-small" match-class="highlight">
+                                 </div>
+                              </div>
+                              <div class="col-lg-4">
+                                 <input type="text" class="form-control"
+                                    ng-model="cliente.sobrenome" placeholder="Sobrenome">
+                              </div>
+                           </div>
+                           <br>
+                           <div class="row">
+                              <div class="col-lg-6">
+                                 <input type="text" class="form-control"
+                                    ng-model="cliente.telefone" ui-telefonef placeholder="Fixo com DDD">
+                              </div>
+                              <div class="col-lg-6">
+                                 <input type="text" class="form-control"
+                                    ng-model="cliente.celular" ui-telefonec placeholder="Celular com DDD">
+                              </div>
+                           </div>
+                           <br>
+                           <div class="row">
+                              <div class="col-lg-7">
+                                 <input type="text" class="form-control"
+                                    ng-model="cliente.endereco" placeholder="Endereço">
+                              </div>
+                              <div class="col-lg-3">
+                                 <input type="text" class="form-control"
+                                    ng-model="cliente.complemento" placeholder="Complemento">
+                              </div>
+                              <div class="col-lg-2">
+                                 <input type="text" class="form-control"
+                                    ng-model="cliente.numero" placeholder="Nº" maxlength="5" ui-number-mask="0" ui-hide-group-sep>
+                              </div>
+                           </div>
+                           <br>
+                           <div class="row">
+                              <div class="col-lg-6">
+                                 <input type="text" class="form-control"
+                                    ng-model="cliente.cidade" placeholder="Cidade">
+                              </div>
+                              <div class="col-lg-6">
+                                 <select ng-model="cliente.estado" class="form-control" placeholder="Estado">
+                                    <option value="">Selecione</option>
+                                    <option value="AC">Acre</option>
+                                    <option value="AL">Alagoas</option>
+                                    <option value="AP">Amapá</option>
+                                    <option value="AM">Amazonas</option>
+                                    <option value="BA">Bahia</option>
+                                    <option value="CE">Ceará</option>
+                                    <option value="DF">Distrito Federal</option>
+                                    <option value="ES">Espirito Santo</option>
+                                    <option value="GO">Goiás</option>
+                                    <option value="MA">Maranhão</option>
+                                    <option value="MS">Mato Grosso do Sul</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="PA">Pará</option>
+                                    <option value="PB">Paraíba</option>
+                                    <option value="PR">Paraná</option>
+                                    <option value="PE">Pernambuco</option>
+                                    <option value="PI">Piauí</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="RN">Rio Grande do Norte</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <option value="RO">Rondônia</option>
+                                    <option value="RR">Roraima</option>
+                                    <option value="SC">Santa Catarina</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="SE">Sergipe</option>
+                                    <option value="TO">Tocantins</option>
+                                 </select>
+                              </div>
+                           </div>
+                           <br>
+                           <div class="row">
+                              <div class="col-lg-12">
+                                 <input type="text" class="form-control"
+                                    ng-model="cliente.email" placeholder="Email">
+                              </div>
+                           </div>
+                           <br>
+                           <div class="row">
+                              <div class="col-lg-6">
+                                 <input type="text" class="form-control"
+                                    ng-model="cliente.cpf" ui-cpf placeholder="CPF" maxlength="12" >
+                              </div>
+                              <div class="col-lg-4">
+                                 <input type="text" class="form-control"
+                                    ng-model="cliente.indicacao.nome" disabled placeholder="Indicação">
+                              </div>
+                              <div class="col-lg-2">
+                                 <button ng-disabled="user.regra.id == 2 && cliente.indicacao" data-toggle="modal" data-target="#myModal3" data-dismiss="modal" aria-label="Close" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="col-lg-6">
+                           <div class="row">
+                              <div class="col-lg-10">
+                                 <input type="text" class="form-control"
+                                    ng-model="osCad.endereco_retirada" placeholder="Endereço de Retirada"
+                                    id="Autocomplete2" ng-autocomplete ng-blur="checkForm2(osCad)">
+                              </div>
+                              <div class="col-lg-2">
+                                 <input type="text" class="form-control"
+                                    ng-model="osCad.numero_retirada" placeholder="Nº " maxlength="5" ui-number-mask="0" ui-hide-group-sep>
+                              </div>
+                           </div>
+                           <div class="row" ng-repeat="e in enderecos.rua track by $index" style="margin-top:15px;">
+                              <div class="col-lg-10">
+                                 <input type='text' class="form-control" ng-autocomplete ng-blur="checkForm2(osCad)" ng-model='enderecos.rua[$index]' placeholder='Endereço de Entrega'>
+                              </div>
+                              <div class="col-lg-2">
+                                 <input type='text' class="form-control" ng-model='enderecos.num[$index]' maxlength="5" ui-number-mask="0" ui-hide-group-sep placeholder='Nº'>
+                              </div>
+                           </div>
+                           <br>
+                           <div class="row">
+                              <div class="col-lg-12">
+                                 <button class="btn btn-success btn-block" ng-click="addFormField()">Adicionar +1 Local</button>
+                              </div>
+                              <br><br>
+                              <div class="col-lg-12">
+                                 <button class="btn btn-danger btn-block" ng-click="removeFormField(enderecos)" ng-hide="enderecos.rua.length == 1">Excluir Ultimo Local</button>
+                              </div>
+                           </div>
+                           <br>
+                           <div class="row">
+                              <div class="col-lg-12">
+                                 <textarea ng-model="osCad.descricao" rows="5" style="resize:none;" maxlength="1000" class="form-control" placeholder="Observação"></textarea>
+                              </div>
+                           </div>
+                           <br>
+                           <div class="row">
+                              <div class="col-lg-5" style="margin-right:0;padding-right:0;">
+                                 <input ng-model="osCad.retorno" ng-click="checkForm2()" type="checkbox"> Retorno
+                              </div>
+                              <div class="col-lg-5">
+                                 <p><b>Tipo de Pagamento</b></p>
+                                 <input type="radio" ng-model="osCad.tipoPg" value="VISTA"/>&nbsp;Á Vista
+                                 &nbsp;
+                                 <input type="radio" ng-model="osCad.tipoPg" value="PRAZO"/>&nbsp;Á Prazo
+                              </div>
+                           </div>
+                           <br><br>
+                           <div class="row" ng-if="showValor">
+                              <div class="col-md-6">
+                                 <span id="freightPrice">
+                                    <Br>
+                                    <h4 >Valor Aproximado</h4>
+                                    <h3 style="margin-top:5px;"ng-if="showValor"> R$ {{ valor }}</h3>
+                                 </span>
+                              </div>
+                              <div class="col-md-6">
+                                 <span id="freightPrice">
+                                    <Br>
+                                    <h4 >Distância Aproximada</h4>
+                                    <h3 style="margin-top:5px;" ng-if="showValor"> {{ totalDistance }} km </h3>
+                                 </span>
+                              </div>
+                           </div>
+                           <br>
+                           <div class="row">
+                              <div class="col-md-12" align="center">
+                                 <button class="btn btn-primary" ng-disabled="!valor || !osCad.enderecos_retirada && !enderecos.rua.length > 0" ng-click="chamarMotoboy(cliente,osCad,enderecos)">Chamar Motoboy</button>
+                                 <br><br>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <br>
+                  <div class="portlet-title" ng-show="achouOs">
+                     <div class="caption">
+                        <i class="fa fa-bookmark font-green-sharp"></i>
+                        <span class="caption-subject font-green-sharp bold uppercase">Ultimas Solicitações de {{cliente.nome}}</span>
+                     </div>
+                  </div>
+                  <div ng-show="achouOs" class="portlet-body flip-scroll">
+                     <Br>
+                     <table class="table table-stripped">
+                        <thead>
+                           <tr>
+                              <th width="5%"><a href="" ng-click="ordenarPor('id')">OS</a></th>
+                              <th width="20%">Retirada</th>
+                              <th width="20%">Entrega</th>
+                              <th width="20%">Observação</th>
+                              <th width="15%">Motoboy</th>
+                              <th width="8%"><a href="" ng-click="ordenarPor('valor')">Valor</a></th>
+                              <th width="7%"><a href="" ng-click="ordenarPor('creadted_at')">Data / Hora</a></th>
+                              <th width="15%">Status</th>
+                              <th width="15%">Pago</th>
+                              <th></th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr ng-class="{'cancelado' : oc.status.id == 4, 'andamento' : oc.status.id == 2, 'terminada' : oc.status.id == 3}" ng-if="osCliente.length > 0" ng-repeat="oc in osCliente | orderBy:criterioDeOrdenacao:direcaoDaOrdenacao | limitTo: 3">
+                              <td>{{oc.id}}</td>
+                              <td><strong>Endereço:</strong> {{oc.endereco.endereco_retirada.replace(', Brasil', '')}} - Nº {{oc.endereco.numero_retirada}}
+                                 <br>
+                              </td>
+                              <td><strong>Endereço:</strong> <br><span ng-repeat="oced in oc.endereco.enderecos_entrega">{{oced.endereco_entrega.replace(', Brasil', '')}} - Nº {{oced.numero_entrega}}<br></span><br>
+                              </td>
+                              <td><strong>Observação:</strong> {{oc.endereco.observacao}}
+                              </td>
+                              <td ng-if="oc.motoboy != null">
+                                 {{oc.motoboy.nome}}
+                                 <form ng-if="user.tipo > 1" >
+                                    <br>
+                                    <select ng-change="saveMotoboy(oc.motoboy_id, oc.id)" class="form-control" ng-model="oc.motoboy_id"
+                                       ng-options="m.id as m.nome for m in motoboys">
+                                       <option value="">Selecionar</option>
+                                    </select>
+                                 </form>
+                              </td>
+                              <td ng-if="oc.motoboy == null">
+                                 Sem motoboy
+                                 <form ng-if="user.tipo > 1" >
+                                    <br>
+                                    <select ng-change="saveMotoboy(oc.motoboy_id, oc.id)" class="form-control" ng-model="oc.motoboy_id"
+                                       ng-options="m.id as m.nome for m in motoboys">
+                                       <option value="">Selecionar</option>
+                                    </select>
+                                 </form>
+                              </td>
+                              <td>{{oc.valor | currency:"R$ " }}</td>
+                              <td>{{oc.created_at | data}}</td>
+                              <td>
+                                 {{oc.status.descricao}}
+                                 <form ng-if="user.tipo > 1" >
+                                    <br>
+                                    <select ng-change="saveStatus(oc.status, oc.id)" class="form-control" ng-model="oc.status"
+                                       ng-options="st.id as st.descricao for st in status">
+                                       <option value="">Selecionar</option>
+                                    </select>
+                                 </form>
+                              </td>
+                              <td>{{oc.pago == 1 ? 'Sim' : 'Não'}}</td>
+                              <td>
+                                 <button style="margin-bottom:5px;" ng-click="populaCampo(oc)" href="" class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                 </button>
+                              </td>
+                           <tr ng-if="osCliente.length == 0 && user.regra.id == 1">
+                              <td colspan="10">Sem OS cadastradas</td>
+                           <tr>
+                           <tr ng-if="osCliente.length == 0 && user.regra.id > 1">
+                              <td colspan="11">Sem OS cadastradas</td>
+                           <tr>
+                        </tbody>
+			
+                     </table>
+                  </div>
+                  <br>
+                  <br><Br>
+                  <div class="portlet-title">
+                     <div class="caption">
+                        <i class="fa fa-bookmark font-green-sharp"></i>
+                        <span class="caption-subject font-green-sharp bold uppercase">Solicitações de Motoboy</span>
+                     </div>
+                  </div>
+                  <div class="portlet-body flip-scroll">
+                     <div class="row">
+                        <div class="col-lg-5">
+                           <Br><Br>
+                           <input ng-disabled="os.length == 0" data-container="body" data-placement="top" data-original-title="Tooltip in top" type="text" class="form-control" ng-model="criterioDeBusca.search" ng-keyup="$event.keyCode == 13 ? buscarOsCriterio(criterioDeBusca) : null" placeholder="Buscar por">
+                           <br>
+                           <p style="font-size:10px; color:gray;">Exemplo de Utilização: nome do cliente, nome do operador, sim, nome do motoboy, 01/01/2015, 01/01/2016</p>
+                        </div>
+                        <div class="col-lg-1"><Br><Br>
+                           <button ng-disabled="criterioDeBusca.search.length == 0" class="btn btn-primary" ng-click="buscarOsCriterio(criterioDeBusca)"><span class="glyphicon glyphicon-search" ></span></button>
+                        </div>
+                        <div class="col-lg-6" align="center">
+                           <h3>Critérios de Busca &nbsp;</h3>
+                           <label class="checkbox-inline"><input type="checkbox" value="cliente" ng-model="criterioDeBusca.cliente">Cliente</label>
+                           <label class="checkbox-inline"><input type="checkbox" value="operador" ng-model="criterioDeBusca.operador">Operador</label>
+                           <label class="checkbox-inline"><input type="checkbox" value="pagamento" ng-model="criterioDeBusca.pagamento">Pagamento</label> 
+                           <label class="checkbox-inline"><input type="checkbox" value="pagamento" ng-model="criterioDeBusca.motoboy">Motoboy</label> 
+                           <label class="checkbox-inline"><input type="checkbox" value="created_at" ng-model="criterioDeBusca.created_at">Data</label> 
+                           <Br><Br>
+                        </div>
+                     </div>
+                     <Br>
+                     <table class="table table-stripped">
+                        <thead>
+                           <tr>
+                              <th width="5%" ><a href="" ng-click="ordenarPor('id')">OS</a></th>
+                              <th ><a href="" ng-click="ordenarPor('nome_cliente')">Cliente</a></th>
+                              <th >Operador</th>
+                              <th >Motoboy</th>
+                              <th ><a href="" ng-click="ordenarPor('valor')">Valor</a></th>
+                              <th ><a href="" ng-click="ordenarPor('creadted_at')">Data / Hora</a></th>
+                              <th>Status</th>
+                              <th>Pago</th>
+                              <th></th>
+                           </tr>
+                        </thead>
+                        <tbody ng-repeat="o in osData | orderBy:criterioDeOrdenacao:direcaoDaOrdenacao">
+                           <tr ng-class="{'cancelado' : o.status.id == 4, 'andamento' : o.status.id == 2, 'terminada' : o.status.id == 3}" ng-if="osData.length > 0"
+                              ng-repeat="oet in o.endereco.enderecos_entrega">
+                              <td>{{o.id}}.{{$index + 1}}</td>
+                              <td>{{o.user.nome}} {{o.user.sobrenome}}</td>
+                              <td>{{o.operador ? o.operador.dados_operador.nome : '-'}}
+                              </td>
+                              <td ng-if="o.motoboy != null">
+                                 {{o.motoboy.nome}}
+                                 <form ng-if="user.tipo > 1" >
+                                    <br>
+                                    <select ng-change="saveMotoboy(o.motoboy_id, o.id)" class="form-control" ng-model="o.motoboy_id"
+                                       ng-options="m.id as m.nome for m in motoboys">
+                                       <option value="">Selecionar</option>
+                                    </select>
+                                 </form>
+                              </td>
+                              <td ng-if="o.motoboy == null">
+                                 Sem motoboy 
+                              </td>
+                              <td rowspan="{{o.endereco.enderecos_entrega.length}}" ng-if="$index == 0 && !dbValor[o.id] == true" ng-dblclick="dbInp(o.id)">{{o.valor | currency:"R$ " }}</td>
+                              <td rowspan="{{o.endereco.enderecos_entrega.length}}" ng-if="$index == 0 && dbValor[o.id] == true" >
+                                 <input ng-blur="dbInp(o.id)" type="text" class="form-control" ng-model="o.valor">
+                              </td>
+                              <td>{{o.created_at | data}}</td>
+                              <td>
+                                 {{o.status.descricao}}
+                                 <form ng-if="user.tipo > 1" >
+                                    <br>
+                                    <select ng-change="saveStatus(o.status, o.id)" class="form-control" ng-model="o.status"
+                                       ng-options="st.id as st.descricao for st in status">
+                                       <option value="">Selecionar</option>
+                                    </select>
+                                 </form>
+                              </td>
+                              <td>{{o.pago == 1 ? 'Sim' : 'Não'}}</td>
+                              <td rowspan="{{o.endereco.enderecos_entrega.length}}" ng-show="$index==0">
+                                 <button ng-if="o.status.id != 4" style="margin-bottom:5px;" ng-click="deletarOs(o.id)" href="" class="btn btn-danger btn-sm"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                 </button><br>
+                                 <button data-toggle="modal" data-target="#myModal2" style="margin-bottom:5px;"  ng-if="user.regra.id > 1" ng-click="populaModal(o)" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                                 </button><br>
+                                 <button ng-if="o.status.id != 4" style="margin-bottom:5px;" class="btn btn-primary btn-sm"><span class="fa fa-envelope" aria-hidden="true"></span>
+                                 </button><br>
+                                 <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal4" data-dismiss="modal" aria-label="Close" ng-if="user.regra.id > 1" ng-click="populaModal(o)"  ><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+                                 </button>                                 
+                              </td>
+                           <tr ng-if="os.length == 0 && user.regra.id == 1">
+                              <td colspan="10">Sem OS cadastradas</td>
+                           <tr>
+                           <tr ng-if="os.length == 0 && user.regra.id > 1">
+                              <td colspan="11">Sem OS cadastradas</td>
+                           <tr>
+                        </tbody>
+<tr ng-if="os.length == 0 && user.regra.id > 1">
+                              <td colspan="11">Sem OS cadastradas</td>
+                           <tr>
+
+                     </table>
+                  </div>
+               </div>
+               <!-- END SAMPLE TABLE PORTLET-->
+               <!-- BEGIN SAMPLE TABLE PORTLET-->
+               <div align="center" ng-show="!criteriou">
+                  <ul class="pagination pagination-sm" style="margin-left:15px;">
+                     <li>
+                        <a ng-if="!(currentPage == 1)" ng-click="carregarOsPaginada(currentPage-1)">
+                        <i class="fa fa-angle-left"></i>
+                        </a>
+                     </li>
+                     <li ng-repeat="p in pages">
+                        <a ng-disabled="" ng-click="carregarOsPaginada(p)">
+                        {{p}} </a>
+                     </li>
+                     <li>
+                        <a ng-if="!(currentPage == totalPages)" ng-click="carregarOsPaginada(currentPage+1)">
+                        <i class="fa fa-angle-right"></i>
+                        </a>
+                     </li>
+                  </ul>
+               </div>
+               <div align="center" ng-show="criteriou">
+                  <ul class="pagination pagination-sm" style="margin-left:15px;">
+                     <li>
+                        <a ng-if="!(currentPage == 1)" ng-click="carregarOsPaginadaCrit(crit,currentPage-1)">
+                        <i class="fa fa-angle-left"></i>
+                        </a>
+                     </li>
+                     <li ng-repeat="p in pages">
+                        <a ng-disabled="" ng-click="carregarOsPaginadaCrit(crit,p)">
+                        {{p}} </a>
+                     </li>
+                     <li>
+                        <a ng-if="!(currentPage == totalPages)" ng-click="carregarOsPaginadaCrit(crit,currentPage+1)">
+                        <i class="fa fa-angle-right"></i>
+                        </a>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <!-- END PAGE CONTENT INNER -->
+      </div>
+   </div>
+   <!-- END PAGE CONTENT -->
+</div>
+<div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+   <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+         </div>
+         <div class="modal-body">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-12" style="background-color:#32CACA; height:100%;color:white;">
+                     <h3>Indicação</h3>
+                     <p>Caso você tenha sido indicado por alguém, por gentileza selecione o indicador.
+                     </p>
+                  </div>
+               </div>
+               <br><BR>
+               <div class="row">
+                  <div class="col-md-12" align="left">
+                     <table class="table table-stripped">
+                        <thead>
+                           <tr>
+                              <th><a href="" ng-click="ordenarPor('nome')">Nome</a></th>
+                              <th><a href="" ng-click="ordenarPor('tipo')">Tipo</a></th>
+                              <th></th>
+                           </tr>
+                           <tr ng-if="indicacao.length > 0" ng-repeat="i in indicacao">
+                              <td>{{i.nome}}</td>
+                              <td>{{i.tipo}}</td>
+                              <td><button class="btn btn-success"  data-toggle="modal" data-target="#myModal" data-dismiss="modal" aria-label="Close" ng-click="indVincular(i)" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
+                        </thead>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="modal fade" id="myModal4" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+   <div class="modal-dialog modal-md" role="document" style="width:300px;">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+         </div>
+         <div class="modal-body">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-12" style="background-color:#32CACA; height:100%;color:white;">
+                     <h3>Notificar {{osModal.motoboy.nome}}?</h3>                
+                  </div>
+               </div>
+               <br><br>
+               <div class="row">
+                  <div class="col-md-12" style="background-color:#ffffff; height:100%;color:white;">
+                     <button class="btn btn-primary" ng-if="osModal.status.id != 4" ng-click="salvarOsAndroid(osModal, osModal.id)" data-dismiss="modal">OK</button><button class="btn btn-warning" data-dismiss="modal">Cancel</button>                     
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
